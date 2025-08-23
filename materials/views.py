@@ -11,7 +11,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class LessonCreateApiView(CreateAPIView):
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all() # Можно не указывать queryset
     serializer_class = LessonSerializer
 
 
@@ -31,5 +31,5 @@ class LessonUpdateApiView(UpdateAPIView):
 
 
 class LessonDestroyApiView(DestroyAPIView):
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all() # Можно не указывать queryset
     serializer_class = LessonSerializer

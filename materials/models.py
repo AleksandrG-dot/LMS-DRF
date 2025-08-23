@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Course(models.Model):
+    """Модель с обучающими курсами"""
     title = models.CharField(
         max_length=200,
         blank=False,
@@ -29,6 +30,7 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """Модель с обучающими уроками"""
     title = models.CharField(
         max_length=200,
         blank=False,
