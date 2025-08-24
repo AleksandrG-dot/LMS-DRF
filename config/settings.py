@@ -96,3 +96,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
+
+# Методы оплаты. По умолчанию: "Перевод на счет"
+PAYMENT_METHOD = (
+    ('cash', 'Наличные'),
+    ('transfer', 'Перевод на счет')
+)
