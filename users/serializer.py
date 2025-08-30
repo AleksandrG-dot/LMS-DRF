@@ -16,6 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
             "avatar",
             "groups",
             "user_permissions",
+            "password"  # без этого поля не передается пароль в UsersCreateAPIView
         )
 
 

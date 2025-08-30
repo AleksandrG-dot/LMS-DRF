@@ -17,7 +17,7 @@ router_payment.register(r"payment", PaymentViewSet, basename="payment")
 urlpatterns = [
     path("register/", UsersCreateAPIView.as_view(), name="register"),
     #  В текущей реализации DRF и библиотеки JWT-аутентификации класс TokenObtainPairView уже
-    #  имеет встроенные права AllowAny (писать .as_view(permissions=(AllowAny,) не надо)
+    #  имеет встроенные права AllowAny (писать .as_view(permission_classes = (AllowAny,)) не надо)
     path("login/", TokenObtainPairView.as_view(), name="login"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("list/", UsersListApiView.as_view(), name="users_list"),

@@ -13,4 +13,4 @@ class Command(BaseCommand):
 
         # Загружаем данные из фикстуры users_fixture.json
         call_command("loaddata", "users_fixture.json")
-        self.stdout.write(self.style.SUCCESS("Successfully loaded data from fixture"))
+        self.stdout.write(self.style.SUCCESS("Successfully loaded users from fixture"))
