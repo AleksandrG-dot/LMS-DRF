@@ -1,1 +1,242 @@
-[{"model": "materials.lesson", "pk": 1, "fields": {"title": "1. HTML и CSS: лейаут, доступность, интерактив", "description": "Bash и Git. Шрифт и типографика, Семантика. Флексбокс-верстка. Настройка страницы, мета, встраиваемый контент.", "preview": "lesson/preview/1_html_css_js.png", "course": 1, "link_video": "https://rutube.ru/video/a4d8c856e714b913367a21e92bc3a032/"}}, {"model": "materials.lesson", "pk": 2, "fields": {"title": "2. Дизайн, адаптивная верстка и декодирование", "description": "Разработка интерфейса для разных устройств. Растровая графика. SVG. 2D и 3D-трансформации. Анимации. Декорирование", "preview": "", "course": 1, "link_video": "https://rutube.ru/video/74e591a2b309dba1c2b1f53592a705a3/"}}, {"model": "materials.lesson", "pk": 3, "fields": {"title": "3. Ьазовый JavaScript", "description": "Примитивы. DOM. Дебаггинг JavaScript. Методы работы с данными, условия, циклы. Функции. Массивы. Объекты", "preview": "", "course": 1, "link_video": null}}, {"model": "materials.lesson", "pk": 4, "fields": {"title": "4. Продвинутый JavaScript", "description": "Сборка проекта. Webpack. Модули в JS. Продвинутый JS. Асинхронность. Обработка событий.", "preview": "", "course": 1, "link_video": null}}, {"model": "materials.lesson", "pk": 5, "fields": {"title": "5. TypeScript и ООП", "description": "Введение в TypeScript и ООП. Основы TypeScript. Работа с окружением. ООП в интерфейсах.", "preview": "", "course": 1, "link_video": null}}, {"model": "materials.lesson", "pk": 6, "fields": {"title": "6. Основы разработки с помощью React", "description": "CRA. JSX. Компоненты и их жизненный циклл. Состояния и эффекты. React DevTool. Импорт модулей. Библиотека компонентов.", "preview": "", "course": 1, "link_video": null}}, {"model": "materials.lesson", "pk": 7, "fields": {"title": "7. Роутинг и авторизация", "description": "Роутинг в приложениях. Авторизация и роутинг в приложениях. Взаимодействие в режиме реального времени: WebSockets. Глобальное состояние для Redux.", "preview": "", "course": 1, "link_video": null}}, {"model": "materials.lesson", "pk": 8, "fields": {"title": "8. Тестирование React-приложений", "description": "Научитесь выстраивать удобную для тестирования структуру компонентов, оптимизировать приложения, проводить юнит- и интеграционное тестирование, подготавливать и публиковать в продакшен, деплоить на собственный сервер.", "preview": "", "course": 1, "link_video": null}}, {"model": "materials.lesson", "pk": 9, "fields": {"title": "9. Проектный модуль", "description": "Работа в команде с менеджерами проектов, тимлидами, системными аналитиками, дизайнерами и разработчиками над крупным проектом.", "preview": "", "course": 1, "link_video": null}}, {"model": "materials.lesson", "pk": 10, "fields": {"title": "10. Нейросети для разработчиков", "description": "YandexGPT", "preview": "", "course": 1, "link_video": null}}, {"model": "materials.lesson", "pk": 11, "fields": {"title": "1. Изучение транзактного анализа", "description": "Погружаетесь в теорию, которая в процессе групповой практики становится конкретными навыками, которые вы примените на себе. Благодаря этому почувствуете начало личной трансформации.", "preview": "", "course": 2, "link_video": null}}, {"model": "materials.lesson", "pk": 12, "fields": {"title": "2. Получение навыков консультирования", "description": "Научитесь техникам работы психолога, установлению контакта, составлению плана консультирования клиента. Отработаете навыки с одногруппниками в ролях «клиент», «психолог» и «наблюдатель»", "preview": "", "course": 2, "link_video": null}}, {"model": "materials.lesson", "pk": 13, "fields": {"title": "3. Отработка навыков с реальными клиентами", "description": "Будете консультировать реального клиента под супервизией преподавателя и анализировать результаты в дипломной работе.»", "preview": "", "course": 2, "link_video": null}}, {"model": "materials.lesson", "pk": 14, "fields": {"title": "1. Командная строка. DCL и TCL", "description": "", "preview": "", "course": 4, "link_video": null}}, {"model": "materials.lesson", "pk": 15, "fields": {"title": "2. Хранимые процедуры", "description": "Циклы и условия, Возврат скаляра и таблиц, Execute, Raise exception, Call, Триггеры", "preview": "", "course": 4, "link_video": null}}, {"model": "materials.lesson", "pk": 16, "fields": {"title": "3. Зависимости. Нормализация и денормализация", "description": "", "preview": "", "course": 4, "link_video": null}}, {"model": "materials.lesson", "pk": 17, "fields": {"title": "4. Основы проектирования", "description": "Архитектурные модели, Модели данных, Основы проектирования", "preview": "", "course": 4, "link_video": null}}, {"model": "materials.lesson", "pk": 18, "fields": {"title": "5. Масштабирование", "description": "Горизонтальное и вертикальное шардирование. Репликация Master-Slavе.", "preview": "", "course": 4, "link_video": null}}, {"model": "materials.lesson", "pk": 19, "fields": {"title": "6. PostgreSQL extensions", "description": "Tablefunc. PostGIS. File_fdw. Postgres_fdw. Pg_stat_statements.", "preview": "", "course": 4, "link_video": null}}, {"model": "materials.lesson", "pk": 20, "fields": {"title": "7. Интеграция", "description": "Api, Redis.", "preview": "", "course": 4, "link_video": null}}]
+[
+  {
+    "model": "materials.lesson",
+    "pk": 1,
+    "fields": {
+      "title": "1. HTML и CSS: лейаут, доступность, интерактив",
+      "description": "Bash и Git. Шрифт и типографика, Семантика. Флексбокс-верстка. Настройка страницы, мета, встраиваемый контент.",
+      "preview": "lesson/preview/1_html_css_js.png",
+      "course": 1,
+      "link_video": "https://rutube.ru/video/a4d8c856e714b913367a21e92bc3a032/",
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 2,
+    "fields": {
+      "title": "2. Дизайн, адаптивная верстка и декодирование",
+      "description": "Разработка интерфейса для разных устройств. Растровая графика. SVG. 2D и 3D-трансформации. Анимации. Декорирование",
+      "preview": "",
+      "course": 1,
+      "link_video": "https://rutube.ru/video/74e591a2b309dba1c2b1f53592a705a3/",
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 3,
+    "fields": {
+      "title": "3. Ьазовый JavaScript",
+      "description": "Примитивы. DOM. Дебаггинг JavaScript. Методы работы с данными, условия, циклы. Функции. Массивы. Объекты",
+      "preview": "",
+      "course": 1,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 4,
+    "fields": {
+      "title": "4. Продвинутый JavaScript",
+      "description": "Сборка проекта. Webpack. Модули в JS. Продвинутый JS. Асинхронность. Обработка событий.",
+      "preview": "",
+      "course": 1,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 5,
+    "fields": {
+      "title": "5. TypeScript и ООП",
+      "description": "Введение в TypeScript и ООП. Основы TypeScript. Работа с окружением. ООП в интерфейсах.",
+      "preview": "",
+      "course": 1,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 6,
+    "fields": {
+      "title": "6. Основы разработки с помощью React",
+      "description": "CRA. JSX. Компоненты и их жизненный циклл. Состояния и эффекты. React DevTool. Импорт модулей. Библиотека компонентов.",
+      "preview": "",
+      "course": 1,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 7,
+    "fields": {
+      "title": "7. Роутинг и авторизация",
+      "description": "Роутинг в приложениях. Авторизация и роутинг в приложениях. Взаимодействие в режиме реального времени: WebSockets. Глобальное состояние для Redux.",
+      "preview": "",
+      "course": 1,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 8,
+    "fields": {
+      "title": "8. Тестирование React-приложений",
+      "description": "Научитесь выстраивать удобную для тестирования структуру компонентов, оптимизировать приложения, проводить юнит- и интеграционное тестирование, подготавливать и публиковать в продакшен, деплоить на собственный сервер.",
+      "preview": "",
+      "course": 1,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 9,
+    "fields": {
+      "title": "9. Проектный модуль",
+      "description": "Работа в команде с менеджерами проектов, тимлидами, системными аналитиками, дизайнерами и разработчиками над крупным проектом.",
+      "preview": "",
+      "course": 1,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 10,
+    "fields": {
+      "title": "10. Нейросети для разработчиков",
+      "description": "YandexGPT",
+      "preview": "",
+      "course": 1,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 11,
+    "fields": {
+      "title": "1. Изучение транзактного анализа",
+      "description": "Погружаетесь в теорию, которая в процессе групповой практики становится конкретными навыками, которые вы примените на себе. Благодаря этому почувствуете начало личной трансформации.",
+      "preview": "",
+      "course": 2,
+      "link_video": null,
+      "owner": 5
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 12,
+    "fields": {
+      "title": "2. Получение навыков консультирования",
+      "description": "Научитесь техникам работы психолога, установлению контакта, составлению плана консультирования клиента. Отработаете навыки с одногруппниками в ролях «клиент», «психолог» и «наблюдатель»",
+      "preview": "",
+      "course": 2,
+      "link_video": null,
+      "owner": 5
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 13,
+    "fields": {
+      "title": "3. Отработка навыков с реальными клиентами",
+      "description": "Будете консультировать реального клиента под супервизией преподавателя и анализировать результаты в дипломной работе.»",
+      "preview": "",
+      "course": 2,
+      "link_video": null,
+      "owner": 5
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 14,
+    "fields": {
+      "title": "1. Командная строка. DCL и TCL",
+      "description": "",
+      "preview": "",
+      "course": 4,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 15,
+    "fields": {
+      "title": "2. Хранимые процедуры",
+      "description": "Циклы и условия, Возврат скаляра и таблиц, Execute, Raise exception, Call, Триггеры",
+      "preview": "",
+      "course": 4,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 16,
+    "fields": {
+      "title": "3. Зависимости. Нормализация и денормализация",
+      "description": "",
+      "preview": "",
+      "course": 4,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 17,
+    "fields": {
+      "title": "4. Основы проектирования",
+      "description": "Архитектурные модели, Модели данных, Основы проектирования",
+      "preview": "",
+      "course": 4,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 18,
+    "fields": {
+      "title": "5. Масштабирование",
+      "description": "Горизонтальное и вертикальное шардирование. Репликация Master-Slavе.",
+      "preview": "",
+      "course": 4,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 19,
+    "fields": {
+      "title": "6. PostgreSQL extensions",
+      "description": "Tablefunc. PostGIS. File_fdw. Postgres_fdw. Pg_stat_statements.",
+      "preview": "",
+      "course": 4,
+      "link_video": null,
+      "owner": 1
+    }
+  },
+  {
+    "model": "materials.lesson",
+    "pk": 20,
+    "fields": {
+      "title": "7. Интеграция",
+      "description": "Api, Redis.",
+      "preview": "",
+      "course": 4,
+      "link_video": null,
+      "owner": 1
+    }
+  }
+]
