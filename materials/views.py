@@ -7,12 +7,14 @@ from rest_framework.permissions import IsAuthenticated
 from users.permissions import IsModer, IsOwner
 
 from .models import Course, Lesson
+from .paginations import CustomPagination
 from .serializer import CourseSerializer, LessonSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    pagination_class = CustomPagination
 
     def perform_create(self, serializer):
         """Автоматическое сохранение авторизованного пользователя как владельца курса"""
@@ -56,6 +58,7 @@ class LessonListApiView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner,)
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         """Возвращает только уроки авторизованного пользователя."""
