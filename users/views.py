@@ -1,8 +1,11 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics, viewsets
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from users.models import Payment, User
+from materials.models import Course
+from users.models import Payment, User, Subscription
 from users.serializer import PaymentSerializer, UserSerializer
 
 
@@ -54,3 +57,33 @@ class PaymentViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ("course", "lesson", "payment_method")
     ordering_fields = ("date",)
+
+
+class SubscriptionAPIView(APIView):
+    """Дженерик на установку или удаление подписки пользователя"""
+
+    def post(self, *args, **kwargs):
+        # получаем объект пользователя
+        user = self.request.user
+
+        # Получаем id курса из self.reqests.data
+        course_id = self.request.data.get("course")
+        if not course_id:
+            return Response({"course": ["This field is required."]})
+
+        # Получаем объект курса из базы
+        course_item = generics.get_object_or_404(Course, id=course_id)
+
+        # Получаем объекты подписок по текущему пользователю и курсу
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = f"Подписка удалена на курс '{course_item.title}'"
+            status = False
+        else:
+            Subscription.objects.create(user=user, course=course_item)
+            message = f"Подписка добавлена на курс '{course_item.title}'"
+            status = True
+
+        return Response({"message": message, "status": status})

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from users.models import Subscription
 from .models import Course, Lesson
 from .validators import validate_url_youtube
 
@@ -17,7 +18,11 @@ class LessonSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     """Сериализатор для модели курсов"""
 
+    # Поле с количеством уроков у курса
     lessons_count = serializers.SerializerMethodField(read_only=True)
+
+    # Поле с подпиской
+    subscription = serializers.SerializerMethodField(read_only=True)
 
     # Первый вариант решения задачи 3: Вывод списка уроков для курса.
     # Вывод с помощью сериализатора для связанной модели
@@ -31,7 +36,13 @@ class CourseSerializer(serializers.ModelSerializer):
     #     return [lesson.title for lesson in Lesson.objects.filter(course=course)]
 
     def get_lessons_count(self, instance):
+        """Подсчитывает количество уроков в курса"""
         return instance.lesson_set.count()
+
+    def get_subscription(self, obj):
+        """Говорит есть ли подписка на обновления курса у текущего пользователя (из модели Subscription)"""
+        user = self.context['request'].user # контекст автоматически передается при использовании ModelViewSet
+        return Subscription.objects.filter(user=user, course=obj).exists()
 
     class Meta:
         model = Course
@@ -42,5 +53,6 @@ class CourseSerializer(serializers.ModelSerializer):
             "description",
             "owner",
             "lessons_count",
+            "subscription",
             "lessons",
         )
