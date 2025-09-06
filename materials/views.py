@@ -45,7 +45,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonCreateApiView(CreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (IsAuthenticated, ~IsModer | IsOwner,)
+    permission_classes = (IsAuthenticated, ~IsModer,)
 
     def perform_create(self, serializer):
         """Автоматическое сохранение авторизованного пользователя как владельца урока"""
