@@ -1,6 +1,35 @@
 # LMS-сервис
 
+## Домашняя работа для урока: 32.2 Документирование и безопасность (+ Интеграции)
+
+### Применить миграции
+`python manage.py migrate`
+
+### Наполнение данными
+`python manage.py add_courses` - добавление курсов  
+`python manage.py add_lessons`  - добавление уроков  
+`python manage.py add_users`  - добавление пользователей (включая суперпользователя, пароль от всех - 123qwe)  
+`python manage.py add_groups`  - добавление групп  
+`python manage.py add_payments`  - добавление платежей  
+
+### Создание суперпользователя
+`python manage.py createadmin` - создание суперпользователя (admin@skylearn.ru, pass: 123qwe)
+
+### URL-адреса  
+http://127.0.0.1:8000/materials/course/ - курсы  
+http://127.0.0.1:8000/materials/lesson/ - уроки  (id/, create/, id/delete/, id/update/)  
+http://127.0.0.1:8000/users/ - пользователи (register/, login/, token/refresh/, list/, id/, id/update/, id/delete/)  
+http://127.0.0.1:8000/users/payment/ - платежи  
+http://127.0.0.1:8000/users/subs/ - управление подписками пользователей
+
+Продолжаем работать с проектом от ДЗ 32.1  
+Здесь:  
+- реализовано документирование с использованием drf-yasg: установка, настройка в settings.py, настройка схемы и URL-ссылок, ручное документирование декораторами @method_decorator и @swagger_auto_schema
+- 
+
+
 ## Домашняя работа для урока: 32.1 Валидаторы, пагинация и тесты
+<details><summary>Подробности</summary>  
 
 ### Применить миграции
 `python manage.py migrate`
@@ -36,7 +65,8 @@ http://127.0.0.1:8000/users/subs/ - управление подписками п
 - добавлено тестирование функционала работы подписки на обновления (модель Subscription)
 - добавлено тестирование ендпоинтов на модель курсов Course (конроллер viewsets.ModelViewSet)
 - установлен пакет coverage для подсчета покрытия тестами
-- сгенерированы отчеты по проверке покрытия тестами (coverage.txt, \htmlcov_DZ32.1)
+- сгенерированы отчеты по проверке покрытия тестами (coverage.txt, \htmlcov_DZ32.1)  
+</details>
 
 
 
