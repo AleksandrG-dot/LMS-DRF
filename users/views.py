@@ -135,7 +135,7 @@ class SubscriptionAPIView(APIView):
             message = f"Подписка добавлена на курс '{course_item.title}'"
             status = True
 
-        return Response({"message": message, "status": status}, status=201)
+        return Response({"message": message, "status": status})
 
 
 class PaymentsCourseStripeCreateAPIView(generics.CreateAPIView):
