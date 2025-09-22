@@ -28,7 +28,9 @@ http://127.0.0.1:8000/users/subs/ - управление подписками п
 - добавлена библиотека stripe для работы с эквайрингом stripe.com
 - ключ STRIPE_API_KEY вынесен в .env
 - реализована новая модель users.PaymentCourseStripe для работы с платежами через Stripe
-- 
+- добавлены поля price к моделям Course и Lesson
+- Для обработки заказов добавлен эндпоинт "payment-stripe/", представление PaymentsCourseStripeCreateAPIView, сериалайзер PaymentCourseStripeSerializer.
+- Логика работы с stripe.com вынесена в сервисный слой (файл serializer.py)
 
 
 ## Домашняя работа для урока: 32.1 Валидаторы, пагинация и тесты
