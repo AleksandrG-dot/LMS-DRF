@@ -20,7 +20,9 @@ http://127.0.0.1:8000/materials/course/ - курсы
 http://127.0.0.1:8000/materials/lesson/ - уроки  (id/, create/, id/delete/, id/update/)  
 http://127.0.0.1:8000/users/ - пользователи (register/, login/, token/refresh/, list/, id/, id/update/, id/delete/)  
 http://127.0.0.1:8000/users/payment/ - платежи  
-http://127.0.0.1:8000/users/subs/ - управление подписками пользователей
+http://127.0.0.1:8000/users/subs/ - управление подписками пользователей  
+http://127.0.0.1:8000/users/payment-stripe/ <font color="red">(новое)</font> - оплата курса авторизованным пользователем (POST-запрос с текстом: {"course":  <id_курса>}, Ответ включает ссылку на оплату сервиса stripr: "link": <ссылка>)  
+http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) <font color="red">(новое)</font>- проверка всех оплаченных через stripe курсов. курсы в случае успешной оплаты вносятся в модель Payments (проверка в ендпоинте "payment/")
 
 Продолжаем работать с проектом от ДЗ 32.1  
 Здесь:  
@@ -31,6 +33,9 @@ http://127.0.0.1:8000/users/subs/ - управление подписками п
 - добавлены поля price к моделям Course и Lesson
 - Для обработки заказов добавлен эндпоинт "payment-stripe/", представление PaymentsCourseStripeCreateAPIView, сериалайзер PaymentCourseStripeSerializer.
 - Логика работы с stripe.com вынесена в сервисный слой (файл serializer.py)
+- реализована проверка статуса оплаты в stripe.
+- в случае оплаты данные вносятся в модель Payment, меняется статус is_paid на True в модели PaymentCourseStripe.
+- для этого реализованы эндпоинт "check-stripe-payments/", представление CheckStripePaymentStatusAPIView и сервисная функция check_stripe_payment
 
 
 ## Домашняя работа для урока: 32.1 Валидаторы, пагинация и тесты

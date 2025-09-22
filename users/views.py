@@ -1,7 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import filters, generics, serializers, viewsets
+from rest_framework import filters, generics, serializers, status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,8 +10,8 @@ from materials.models import Course
 from users.models import Payment, PaymentCourseStripe, Subscription, User
 from users.serializer import (PaymentCourseStripeSerializer, PaymentSerializer,
                               UserSerializer)
-from users.services import (create_stripe_price, create_stripe_product,
-                            create_stripe_session)
+from users.services import (check_stripe_payment, create_stripe_price,
+                            create_stripe_product, create_stripe_session)
 
 
 class UsersCreateAPIView(generics.CreateAPIView):
@@ -188,3 +188,32 @@ class PaymentsCourseStripeCreateAPIView(generics.CreateAPIView):
             link=payment_link,
             is_paid=False,  # Статус - не оплачен (он же по умолчанию)
         )
+
+
+class CheckStripePaymentStatusAPIView(generics.CreateAPIView):
+    """
+    Представление для проверки статуса оплаты через Stripe
+    """
+
+    # Создаст запись в модели Payment при успешной оплате
+
+    def create(self, request, *args, **kwargs):
+
+        results = check_stripe_payment()
+        if results["errors"]:
+            return Response(
+                {
+                    "message": f"Проверено {results['checked']} платежей. Успешно оплачено: {results['paid']}",
+                    "errors": results["errors"],
+                    "status": "with_error",
+                },
+                status=status.HTTP_207_MULTI_STATUS,
+            )
+        else:
+            return Response(
+                {
+                    "message": f"Проверено {results['checked']} платежей. Успешно оплачено: {results['paid']}",
+                    "status": "without_error",
+                },
+                status=status.HTTP_200_OK,
+            )
