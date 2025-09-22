@@ -123,3 +123,60 @@ class Subscription(models.Model):
         verbose_name="Курс",
         help_text="Выберите курс для подписки",
     )
+
+
+class PaymentCourseStripe(models.Model):
+    """Модель оплаты курсов через экваиринг stripe.com"""
+    # Ранее сделанную модель Payment не логично использовать, так как там есть способ оплаты за наличный расчет,
+    # нет статуса (оплачено/не оплачено) и поддерживает оплату уроков (не только курсов).
+    # Поэтому модель Payment считаю как модель с уже проведенными платежами, а PaymentCourseStripe содержащую
+    # только платежи через Stripe. Как оплаченные (is_paid=True), так и не оплаченные (is_paid=False).
+    # В случае оплаты (is_paid=True), переносить в модель Payment с флагом payment_method='transfer'.
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="payments_stripe",
+        blank=True,
+        null=False,
+        verbose_name="Пользователь",
+        help_text="Выберите пользователя",
+    )
+    date = models.DateField(verbose_name="Дата оплаты", auto_now_add=True)
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.PROTECT,
+        related_name="payments_stripe",
+        blank=False,
+        null=False,
+        verbose_name="Курс",
+        help_text="Выберите оплаченный курс",
+    )
+    amount = models.PositiveIntegerField(
+        blank=True,
+        null=False,
+        verbose_name="Сумма оплаты",
+        help_text="Укажите сумму оплаты",
+    )
+    session_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="ID сессии",
+        help_text="Укажите ID сессии",
+    )
+    link = models.URLField(
+        max_length=400,
+        blank=True,
+        null=True,
+        verbose_name="Ссылку на оплату",
+        help_text="Укажите ссылку на оплату",
+    )
+    is_paid = models.BooleanField(verbose_name="Статус оплаты", default=False)
+
+    def __str__(self):
+        return f"Курс: {self.course} Клиент: {self.user}"
+
+    class Meta:
+        verbose_name = "Платеж Stripe"
+        verbose_name_plural = "Платежи Stripe"

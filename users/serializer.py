@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Payment, User
+from .models import Payment, PaymentCourseStripe, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
             "avatar",
             "groups",
             "user_permissions",
-            "password"  # без этого поля не передается пароль в UsersCreateAPIView
+            "password",  # без этого поля не передается пароль в UsersCreateAPIView
         )
 
 
@@ -25,4 +25,12 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
+        fields = "__all__"
+
+
+class PaymentCourseStripeSerializer(serializers.ModelSerializer):
+    """Сериализатор для модели платежей за курс через Stripe - PaymentCourseStripe"""
+
+    class Meta:
+        model = PaymentCourseStripe
         fields = "__all__"
