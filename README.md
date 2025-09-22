@@ -1,15 +1,16 @@
 # LMS-сервис
 
 ## Домашняя работа для урока: 32.2 Документирование и безопасность (+ Интеграции)
+Безопасность в этом уроке не настраивали.
 
 ### Применить миграции
 `python manage.py migrate`
 
 ### Наполнение данными
+`python manage.py add_groups`  - добавление групп  
+`python manage.py add_users`  - добавление пользователей (включая суперпользователя, пароль от всех - 123qwe)  
 `python manage.py add_courses` - добавление курсов  
 `python manage.py add_lessons`  - добавление уроков  
-`python manage.py add_users`  - добавление пользователей (включая суперпользователя, пароль от всех - 123qwe)  
-`python manage.py add_groups`  - добавление групп  
 `python manage.py add_payments`  - добавление платежей  
 
 ### Создание суперпользователя
@@ -21,8 +22,11 @@ http://127.0.0.1:8000/materials/lesson/ - уроки  (id/, create/, id/delete/,
 http://127.0.0.1:8000/users/ - пользователи (register/, login/, token/refresh/, list/, id/, id/update/, id/delete/)  
 http://127.0.0.1:8000/users/payment/ - платежи  
 http://127.0.0.1:8000/users/subs/ - управление подписками пользователей  
-http://127.0.0.1:8000/users/payment-stripe/ <font color="red">(новое)</font> - оплата курса авторизованным пользователем (POST-запрос с текстом: {"course":  <id_курса>}, Ответ включает ссылку на оплату сервиса stripr: "link": <ссылка>)  
-http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) <font color="red">(новое)</font>- проверка всех оплаченных через stripe курсов. курсы в случае успешной оплаты вносятся в модель Payments (проверка в ендпоинте "payment/")
+http://127.0.0.1:8000/users/payment-stripe/ <font color="red">(новое)</font> - оплата курса авторизованным пользователем 
+(POST-запрос с текстом: {"course":  <id_курса>}, Ответ включает ссылку на оплату сервиса stripe: "link": <ссылка>)  
+http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) <font color="red">(новое)</font>- проверка всех 
+оплаченных через stripe курсов. Курсы в случае успешной оплаты вносятся в модель Payments (можно проверить в ендпоинте 
+"payment/"). Ответ: статистика о количестве проверенных, оплаченных и ошибочных сессиях stripe. 
 
 Продолжаем работать с проектом от ДЗ 32.1  
 Здесь:  
@@ -32,7 +36,8 @@ http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) <font co
 - реализована новая модель users.PaymentCourseStripe для работы с платежами через Stripe
 - добавлены поля price к моделям Course и Lesson
 - Для обработки заказов добавлен эндпоинт "payment-stripe/", представление PaymentsCourseStripeCreateAPIView, сериалайзер PaymentCourseStripeSerializer.
-- Логика работы с stripe.com вынесена в сервисный слой (файл serializer.py)
+- Логика работы с stripe.com вынесена в сервисный слой (файл serializer.py)  
+<font color="red">Дополнительное задание (ниже)</font>
 - реализована проверка статуса оплаты в stripe.
 - в случае оплаты данные вносятся в модель Payment, меняется статус is_paid на True в модели PaymentCourseStripe.
 - для этого реализованы эндпоинт "check-stripe-payments/", представление CheckStripePaymentStatusAPIView и сервисная функция check_stripe_payment
