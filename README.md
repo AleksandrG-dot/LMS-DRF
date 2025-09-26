@@ -32,7 +32,10 @@ http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) - про
 - установка celery, redis, django-celery-beat
 - реализована асинхронная отправка сообщений при обновлении курса пользователям, подписанным на него (модель Subscription)
 с использованием отложенных задач (метод perform_update, метод task.py/send_information_about_update) 
-- 
+- реализована фоновая периодическая задача materials\task.py\block_unused_user, которая делает неактивными 
+(is_active=False) пользователей если дата последнего входа (last_login) больше чем 1 месяц. 
+Настройки периодичности задачи установлены в параметре CELERY_BEAT_SCHEDULE настроек settings.py. 
+Для проверки в фикстурах есть пользователь с email moderator_2@skylearn.ru.
 
 
 

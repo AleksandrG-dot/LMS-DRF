@@ -142,9 +142,9 @@ CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
 # Настройки для Celery
 CELERY_BEAT_SCHEDULE = {
-    'task-name': {
-        'task': 'myapp.tasks.my_task',  # Путь к задаче
-        'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
+    'block_unused_user': {
+        'task': 'materials.task.block_unused_user',  # Путь к задаче
+        'schedule': timedelta(days=1)   # Расписание выполнения задачи. ДЛЯ ТЕСТИРОВАНИЯ установить (seconds=4)
     },
 }
 
