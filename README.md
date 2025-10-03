@@ -1,6 +1,46 @@
 # LMS-сервис
 
+## Домашняя работа для урока: 33. Celery (Отложенные и периодические задачи)
+
+### Применить миграции
+`python manage.py migrate`
+
+### Наполнение данными
+`python manage.py add_groups`  - добавление групп  
+`python manage.py add_users`  - добавление пользователей (включая суперпользователя, пароль от всех - 123qwe)  
+`python manage.py add_courses` - добавление курсов  
+`python manage.py add_lessons`  - добавление уроков  
+`python manage.py add_payments`  - добавление платежей  
+
+### Создание суперпользователя
+`python manage.py createadmin` - создание суперпользователя (admin@skylearn.ru, pass: 123qwe)
+
+### URL-адреса  
+http://127.0.0.1:8000/materials/course/ - курсы  
+http://127.0.0.1:8000/materials/lesson/ - уроки  (id/, create/, id/delete/, id/update/)  
+http://127.0.0.1:8000/users/ - пользователи (register/, login/, token/refresh/, list/, id/, id/update/, id/delete/)  
+http://127.0.0.1:8000/users/payment/ - платежи  
+http://127.0.0.1:8000/users/subs/ - управление подписками пользователей  
+http://127.0.0.1:8000/users/payment-stripe/ - оплата курса авторизованным пользователем 
+(POST-запрос с текстом: {"course":  <id_курса>}, Ответ включает ссылку на оплату сервиса stripe: "link": <ссылка>)  
+http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) - проверка всех 
+оплаченных через stripe курсов. Курсы в случае успешной оплаты вносятся в модель Payments (можно проверить в ендпоинте 
+"payment/"). Ответ: статистика о количестве проверенных, оплаченных и ошибочных сессиях stripe. 
+
+Продолжаем работать с проектом от ДЗ 32.2  
+Здесь:  
+- установка celery, redis, django-celery-beat
+- реализована асинхронная отправка сообщений при обновлении курса пользователям, подписанным на него (модель Subscription)
+с использованием отложенных задач (метод perform_update, метод task.py/send_information_about_update) 
+- реализована фоновая периодическая задача materials\task.py\block_unused_user, которая делает неактивными 
+(is_active=False) пользователей если дата последнего входа (last_login) больше чем 1 месяц. 
+Настройки периодичности задачи установлены в параметре CELERY_BEAT_SCHEDULE настроек settings.py. 
+Для проверки в фикстурах есть пользователь с email moderator_2@skylearn.ru.
+
+
+
 ## Домашняя работа для урока: 32.2 Документирование и безопасность (+ Интеграции)
+<details><summary>Подробности</summary>  
 Безопасность в этом уроке не настраивали.
 
 ### Применить миграции
@@ -41,6 +81,7 @@ http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) <font co
 - реализована проверка статуса оплаты в stripe.
 - в случае оплаты данные вносятся в модель Payment, меняется статус is_paid на True в модели PaymentCourseStripe.
 - для этого реализованы эндпоинт "check-stripe-payments/", представление CheckStripePaymentStatusAPIView и сервисная функция check_stripe_payment
+</details>
 
 
 ## Домашняя работа для урока: 32.1 Валидаторы, пагинация и тесты

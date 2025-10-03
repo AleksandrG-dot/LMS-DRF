@@ -6,20 +6,28 @@ from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 
+from users.models import Subscription
 from users.permissions import IsModer, IsOwner
 
 from .models import Course, Lesson
 from .paginations import CustomPagination
 from .serializer import CourseSerializer, LessonSerializer
+from .task import send_information_about_update
 
-@method_decorator(name='list', decorator=swagger_auto_schema(
-    operation_description="Вьюсет для отображения списка курсов"
-))
-@method_decorator(name='create', decorator=swagger_auto_schema(
-    operation_description="Вьюсет для создания курса"
-))
+
+@method_decorator(
+    name="list",
+    decorator=swagger_auto_schema(
+        operation_description="Вьюсет для отображения списка курсов"
+    ),
+)
+@method_decorator(
+    name="create",
+    decorator=swagger_auto_schema(operation_description="Вьюсет для создания курса"),
+)
 class CourseViewSet(viewsets.ModelViewSet):
     """Вьюсет для CRUD модели курсов."""
+
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = CustomPagination
@@ -49,9 +57,16 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Course.objects.all()
         return Course.objects.filter(owner=self.request.user)
 
+    def perform_update(self, serializer):
+        course = serializer.save()
+        sub_list = Subscription.objects.filter(course=course)
+        email_list = [sub.user.email for sub in sub_list]
+        send_information_about_update.delay(course.title, email_list)
+
 
 class LessonCreateApiView(CreateAPIView):
     """Дженерик для создания урока."""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, ~IsModer,)
@@ -65,6 +80,7 @@ class LessonCreateApiView(CreateAPIView):
 
 class LessonListApiView(ListAPIView):
     """Дженерик для отображения списков уроков."""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner,)
@@ -79,6 +95,7 @@ class LessonListApiView(ListAPIView):
 
 class LessonRetrieveApiView(RetrieveAPIView):
     """Дженерик для изменения урока."""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsModer | IsOwner,)
@@ -86,6 +103,7 @@ class LessonRetrieveApiView(RetrieveAPIView):
 
 class LessonUpdateApiView(UpdateAPIView):
     """Дженерик для обновления урока."""
+
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = (IsModer | IsOwner,)
@@ -93,6 +111,7 @@ class LessonUpdateApiView(UpdateAPIView):
 
 class LessonDestroyApiView(DestroyAPIView):
     """Дженерик для удаления урока."""
+
     queryset = Lesson.objects.all()  # Можно не указывать queryset
     serializer_class = LessonSerializer
     permission_classes = (~IsModer | IsOwner,)

@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'materials',
     'django_filters',
     'drf_yasg',
+
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +124,37 @@ PAYMENT_METHOD = (
     ('cash', 'Наличные'),
     ('transfer', 'Перевод на счет')
 )
+
+# Celery Configuration Options
+CELERY_TIMEZONE = TIME_ZONE
+
+# Флаг отслеживания выполнения задач
+CELERY_TASK_TRACK_STARTED = True
+
+# Максимальное время на выполнение задачи
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# URL-адрес брокера сообщений
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+
+# URL-адрес брокера результатов, также Redis
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+
+# Настройки для Celery
+CELERY_BEAT_SCHEDULE = {
+    'block_unused_user': {
+        'task': 'materials.task.block_unused_user',  # Путь к задаче
+        'schedule': timedelta(days=1)   # Расписание выполнения задачи. ДЛЯ ТЕСТИРОВАНИЯ установить (seconds=4)
+    },
+}
+
+# Настройки почты
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
