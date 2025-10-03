@@ -1,6 +1,65 @@
 # LMS-сервис
+## Домашняя работа для уроков: 34.1 Docker и 34.2 Docker Compose
+
+### Шаги для запуска всех сервисов
+
+1. **Клонируйте репозиторий**
+`git clone https://github.com/AleksandrG-dot/LMS-DRF/tree/develop`
+2. **Настройте переменные окружения**
+- Создайте файл .env в корне проекта
+- Заполните его по примеру .env.example
+3. **Запустите проект командой**  
+`docker-compose up -d`  (дождитесь сборки и/или загрузки образов)  
+Теперь можно использовать проект.  
+Для входа в админку необходим суперпользователь, команда для создания суперпользователя приведена ниже.
+
+### Полезные команды
+- Создание суперпользователя (admin@skylearn.ru, pass: 123qwe): `docker-compose exec web python manage.py createadmin`
+- Остановка всех сервисов: `docker-compose down`
+- Пересборка образа: `docker-compose up -d --build`
+- Выполнение миграций: `docker-compose exec web python manage.py migrate`
+- Просмотр логов: `docker-compose logs <service_name>`.
+
+### Проверка работоспособности сервисов
+- Django (web): http://localhost:8000
+- API документация: http://localhost:8000/swagger/ или http://localhost:8000/redoc/
+- Admin Panel: http://localhost:8000/admin/
+- PostgreSQL (db): проверяется автоматически через healthcheck
+- Redis (redis): проверяется автоматически через healthcheck
+- Celery Worker (celery): логи можно посмотреть через `docker-compose logs celery`
+- Celery Beat (celery_beat): логи можно посмотреть через `docker-compose logs celery_beat`
+
+### Структура сервисов
+- web: Django приложение на порту 8000
+- db: PostgreSQL база данных на порту 5432
+- redis: Redis кэш на порту 6379
+- celery: Celery worker для отложенных задач
+- celery_beat: Celery beat для периодических задач
+
+
+### URL-адреса  
+http://127.0.0.1:8000/materials/course/ - курсы  
+http://127.0.0.1:8000/materials/lesson/ - уроки  (id/, create/, id/delete/, id/update/)  
+http://127.0.0.1:8000/users/ - пользователи (register/, login/, token/refresh/, list/, id/, id/update/, id/delete/)  
+http://127.0.0.1:8000/users/payment/ - платежи  
+http://127.0.0.1:8000/users/subs/ - управление подписками пользователей  
+http://127.0.0.1:8000/users/payment-stripe/ - оплата курса авторизованным пользователем 
+(POST-запрос с текстом: {"course":  <id_курса>}, Ответ включает ссылку на оплату сервиса stripe: "link": <ссылка>)  
+http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) - проверка всех 
+оплаченных через stripe курсов. Курсы в случае успешной оплаты вносятся в модель Payments (можно проверить в ендпоинте 
+"payment/"). Ответ: статистика о количестве проверенных, оплаченных и ошибочных сессиях stripe. 
+
+Продолжаем работать с проектом от ДЗ 33  
+Здесь выполнена реализация многоконтейнерного приложения:  
+- создан и заполнен файл Dockerfile для автоматического сбора Docker-образа
+- добавлен файл с исключениями .dockerignore
+- создан и заполнен файл docker-compose.yml автоматического сбора образов и запуска контейнеров
+
+
 
 ## Домашняя работа для урока: 33. Celery (Отложенные и периодические задачи)
+<font color="green">Финальная работа по Django REST Framework</font>
+<details><summary>Подробности</summary>
 
 ### Применить миграции
 `python manage.py migrate`
@@ -36,7 +95,7 @@ http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) - про
 (is_active=False) пользователей если дата последнего входа (last_login) больше чем 1 месяц. 
 Настройки периодичности задачи установлены в параметре CELERY_BEAT_SCHEDULE настроек settings.py. 
 Для проверки в фикстурах есть пользователь с email moderator_2@skylearn.ru.
-
+</details>
 
 
 ## Домашняя работа для урока: 32.2 Документирование и безопасность (+ Интеграции)

@@ -147,6 +147,8 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(days=1)   # Расписание выполнения задачи. ДЛЯ ТЕСТИРОВАНИЯ установить (seconds=4)
     },
 }
+# Использование Database Scheduler (без этого не работает контейнер beat)
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Настройки почты
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
