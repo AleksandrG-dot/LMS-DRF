@@ -53,10 +53,10 @@ jobs:
 ##        HOST: localhost
 #      run: python manage.py migrate   #
 
-#    - name: Create .env file
-#      run: |
-#        echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
-#        echo "TAG=${{ github.sha }}" >> .env
+    - name: Create .env file
+      run: |
+        echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
+        echo "TAG=${{ github.sha }}" >> .env
 
     - name: Run tests
 #      env:
