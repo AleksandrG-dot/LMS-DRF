@@ -59,7 +59,10 @@ jobs:
         echo "TAG=${{ github.sha }}" >> .env
 
     - name: Run tests
-#      env:
+      env:
+        EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+        EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+        DEBUG: ${{ secrets.DEBUG }}
 #        NAME: lms_db
 #        USER: postrges
 #        PASSWORD: postgres
