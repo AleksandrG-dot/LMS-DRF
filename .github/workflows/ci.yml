@@ -40,17 +40,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+# Пример для poetry
 #        pip install poetry
 #        poetry config virtualenvs.create false
 #        poetry install --no-root
 
-    - name: Run migrations   #
-#      env:
-#        NAME: lms_db
-#        USER: postrges
-#        PASSWORD: postgres
-#        HOST: localhost
-      run: python manage.py migrate   #
+#    - name: Run migrations   #??? надо ли
+##      env:
+##        NAME: lms_db
+##        USER: postrges
+##        PASSWORD: postgres
+##        HOST: localhost
+#      run: python manage.py migrate   #
 
 #    - name: Create .env file
 #      run: |
@@ -66,7 +67,7 @@ jobs:
       run: python manage.py test
 
 
-#  build:
+#  build: # сборка образа и отправка на Docker Hub
 #    needs: test
 #    runs-on: ubuntu-latest
 #
@@ -84,7 +85,7 @@ jobs:
 #        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
 
   deploy:
-    needs: build  #test
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -128,16 +129,24 @@ jobs:
       - name: Restart application
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            sudo systemctl restart myapp.service
+            sudo systemctl restart LMS-DRF.service
           EOF
 
+# Это деплой с Docker Hub - отключил его.
+#  deploy:
+#    needs: build
+#    runs-on: ubuntu-latest
 
-      # Это деплой с Docker Hub - отключил его.
+#      - name: Set up SSH
+#        uses: webfactory/ssh-agent@v0.9.0
+#        with:
+#          ssh-private-key: ${{ secrets.SSH_KEY }}
+
 #      - name: Deploy to Server
 #        run: |
 #          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
 #          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
-#          docker stop lms_api || true
-#          docker rm lms_api || true
+#          docker stop lms_api || true  # останавливаем старый контейнер если он есть
+#          docker rm lms_api || true  # удаляем старый контейнер если он есть
 #          docker run -d --name lms_api --env-file .env -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
 #          EOF

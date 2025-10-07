@@ -1,8 +1,9 @@
+import sys
 from datetime import timedelta
 from pathlib import Path
 import os
 
-from django.conf.global_settings import STATICFILES_DIRS, STATIC_ROOT
+# from django.conf.global_settings import STATICFILES_DIRS, STATIC_ROOT
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -32,7 +33,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_yasg',
 
-    'django_celery_beat',
+    # 'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -164,3 +165,15 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
+
+TEST_MODE = "test" in sys.argv  # Включен или выключен тестовый режим
+
+# Использование более легкой БД SQLite в тестах вместо PostgeSQL
+# и не нужно будет отдельно настраивать сервер PostgreSQL в GitHub Actions.
+if TEST_MODE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
