@@ -63,6 +63,7 @@ jobs:
         EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
         EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
         DEBUG: ${{ secrets.DEBUG }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
 #        NAME: lms_db
 #        USER: postrges
 #        PASSWORD: postgres
