@@ -6,6 +6,7 @@ from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
 
+from config import settings
 from users.models import Subscription
 from users.permissions import IsModer, IsOwner
 
@@ -61,7 +62,10 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = serializer.save()
         sub_list = Subscription.objects.filter(course=course)
         email_list = [sub.user.email for sub in sub_list]
-        send_information_about_update.delay(course.title, email_list)
+
+        # В тестовом режиме сообщение не отправляем (не запускаем celery и redis)
+        if not settings.TEST_MODE:
+            send_information_about_update.delay(course.title, email_list)
 
 
 class LessonCreateApiView(CreateAPIView):
