@@ -45,13 +45,13 @@ jobs:
 #        poetry config virtualenvs.create false
 #        poetry install --no-root
 
-    - name: Run migrations   #??? надо ли
-#      env:
-#        NAME: lms_db
-#        USER: postrges
-#        PASSWORD: postgres
-#        HOST: localhost
-      run: python manage.py migrate   #
+#    - name: Run migrations   #??? надо ли
+##      env:
+##        NAME: lms_db
+##        USER: postrges
+##        PASSWORD: postgres
+##        HOST: localhost
+#      run: python manage.py migrate   #
 
     - name: Create .env file
       run: |
