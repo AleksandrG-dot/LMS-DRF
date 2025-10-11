@@ -98,11 +98,11 @@ jobs:
             # Если существует, останавливаем и удаляем его
             docker stop lms_web || true
             docker rm lms_web || true
-          fi
+          fi 
 
           # Обновляем образ
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
 
           # Запускаем новый контейнер
           docker run -d --name lms_web --env-file .env -p 8000:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
-          EOF
+          EOF # Обнови репозиторий, тварьб а не то выкину в окно мразь. Сорян только после этих слов эта тварь согласиась со мной.
