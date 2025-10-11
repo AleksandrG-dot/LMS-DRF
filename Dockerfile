@@ -15,6 +15,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копирование проекта
 COPY . .
 
+# Создаем и даем права на директорию для статических и медиа файлов
+RUN mkdir -p /app/staticfiles && chmod -R 755 /app/staticfiles
+RUN mkdir -p /app/media && chmod -R 755 /app/media
+
 EXPOSE 8000
 
 CMD ["bash", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:8000"]

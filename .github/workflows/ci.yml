@@ -3,28 +3,28 @@ name: Django CI
 on: [push, pull_request]
 
 jobs:
-#  lint:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Check out code
-#        uses: actions/checkout@v3
-#
-#      - name: Set up Python
-#        uses: actions/setup-python@v4
-#        with:
-#          python-version: "3.10"
-#
-#      - name: Install flake8
-#        run: |
-#          python -m pip install --upgrade pip
-#          pip install flake8
-#
-#      - name: Run flake8
-#        run: flake8 .
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install flake8
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run flake8
+        run: flake8 .
 
 
   test:
-#    needs: lint
+    needs: lint
     runs-on: ubuntu-latest
 
     steps:
@@ -36,27 +36,18 @@ jobs:
       with:
         python-version: "3.10"
 
+    - name: Cache pip
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-# Пример для poetry
-#        pip install poetry
-#        poetry config virtualenvs.create false
-#        poetry install --no-root
-
-#    - name: Run migrations   #??? надо ли
-##      env:
-##        NAME: lms_db
-##        USER: postrges
-##        PASSWORD: postgres
-##        HOST: localhost
-#      run: python manage.py migrate   #
-
-    - name: Create .env file
-      run: |
-        echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
-        echo "TAG=${{ github.sha }}" >> .env
 
     - name: Run tests
       env:
@@ -64,10 +55,6 @@ jobs:
         DEBUG: ${{ secrets.DEBUG }}
         EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
         EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-#        NAME: lms_db
-#        USER: postrges
-#        PASSWORD: postgres
-#        HOST: localhost
       run: |
         python manage.py test
         coverage run --source='.' manage.py test
@@ -86,62 +73,11 @@ jobs:
         run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }} .
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }} .
 
       - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
 
-#  deploy:
-#    needs: test
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Check out code  # В уроках где-то делается, где-то нет
-#        uses: actions/checkout@v4
-#
-#      - name: Set up SSH
-#        uses: webfactory/ssh-agent@v0.9.0
-#        with:
-#          ssh-private-key: ${{ secrets.SSH_KEY }}
-#
-#      - name: Add server to known_hosts
-#        run: |
-#          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-#
-#      - name: Copy project files to server
-#        run: |
-#          rsync -avz --exclude '__pycache__' -o StrictHostKeyChecking=no . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
-#
-#      - name: Install dependencies on server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            cd ${{ secrets.DEPLOY_DIR }}
-#            python3 -m venv venv
-#            source venv/bin/activate
-#            pip install -r requirements.txt
-#          EOF
-#
-#      - name: Apply migrations on server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            cd ${{ secrets.DEPLOY_DIR }}
-#            source venv/bin/activate
-#            python manage.py migrate
-#          EOF
-#
-#      - name: Collect static files on server
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            cd ${{ secrets.DEPLOY_DIR }}
-#            source venv/bin/activate
-#            python manage.py collectstatic --noinput
-#          EOF
-#
-#      - name: Restart application
-#        run: |
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            sudo systemctl restart LMS-DRF.service
-#          EOF
 
 # Это деплой с Docker Hub - отключил его.
   deploy:
@@ -157,8 +93,8 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
-          docker stop lms_api || true  # останавливаем старый контейнер если он есть
-          docker rm lms_api || true  # удаляем старый контейнер если он есть
-          docker run -d --name lms_api --env-file .env -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_api:${{ github.sha }}
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
+          docker stop lms_web || true  # останавливаем старый контейнер если он есть
+          docker rm lms_web || true  # удаляем старый контейнер если он есть
+          docker run -d --name lms_web --env-file .env -p 8000:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
           EOF
