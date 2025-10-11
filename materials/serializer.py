@@ -42,7 +42,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_subscription(self, obj):
         """Говорит есть ли подписка на обновления курса у текущего пользователя (из модели Subscription)"""
-        user = self.context['request'].user # контекст автоматически передается при использовании ModelViewSet
+        user = self.context['request'].user  # контекст автоматически передается при использовании ModelViewSet
         return Subscription.objects.filter(user=user, course=obj).exists()
 
     class Meta:
