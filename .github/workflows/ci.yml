@@ -93,8 +93,16 @@ jobs:
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          # Проверяем, существует ли контейнер с именем lms_web
+          if docker ps -a --format '{{.Names}}' | grep -q 'lms_web'; then
+            # Если существует, останавливаем и удаляем его
+            docker stop lms_web || true
+            docker rm lms_web || true
+          fi
+
+          # Обновляем образ
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
-          docker stop lms_web || true  # останавливаем старый контейнер если он есть
-          docker rm lms_web || true  # удаляем старый контейнер если он есть
+
+          # Запускаем новый контейнер
           docker run -d --name lms_web --env-file .env -p 8000:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
           EOF
