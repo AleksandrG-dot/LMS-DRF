@@ -28,37 +28,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out code
-      uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-    - name: Cache pip
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Run tests
-      env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        DEBUG: ${{ secrets.DEBUG }}
-        EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-        EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-      run: |
-        python manage.py test
-        coverage run --source='.' manage.py test
-        coverage report
+      - name: Run tests
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: ${{ secrets.DEBUG }}
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+        run: |
+          python manage.py test
+          coverage run --source='.' manage.py test
+          coverage report
 
   # сборка образа и отправка на Docker Hub проекта LMS-DRF под именем lms_web
   build:
@@ -79,7 +79,7 @@ jobs:
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
 
 
-# Деплой с Docker Hub проекта lms_web (LMS-DRF)
+  # Деплой с Docker Hub проекта lms_web (LMS-DRF)
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -90,19 +90,33 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
+
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          # Проверяем, существует ли контейнер с именем lms_web
-          if docker ps -a --format '{{.Names}}' | grep -q 'lms_web'; then
-            # Если существует, останавливаем и удаляем его
-            docker stop lms_web || true
-            docker rm lms_web || true
-          fi 
+#          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}  - вроде лишнее
+          docker stop lms_web || true # останавливаем старый контейнер если он есть
+          docker rm lms_web || true # удаляем старый контейнер если он есть
+          # скачиваем и запускаем контейнер с указанием сети. В .env нужно указать IP-адрес контейнера PostgreSQL 
+          docker run -d --name lms_web --env-file .env --network lms-drf_default -p 8000:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
+          EOF
 
-          # Обновляем образ
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
-
-          # Запускаем новый контейнер
-          docker run -d --name lms_web --env-file .env -p 8000:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
-          EOF # Обнови репозиторий, тварьб а не то выкину в окно мразь. Сорян только после этих слов эта тварь согласиась со мной.
+#     СДАЛ С ЭТИМ ВАРИАНТОМ - он не сработал
+#      - name: Deploy to Server
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+#          # Проверяем, существует ли контейнер с именем lms_web
+#          if docker ps -a --format '{{.Names}}' | grep -q 'lms_web'; then
+#            # Если существует, останавливаем и удаляем его
+#            docker stop lms_web || true
+#            docker rm lms_web || true
+#          fi
+#
+#          # Обновляем образ
+#          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
+#
+#          # Запускаем новый контейнер
+#          docker run -d --name lms_web --env-file .env -p 8000:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/lms_web:${{ github.sha }}
+#          EOF # Обнови репозиторий, тварьб а не то выкину в окно мразь. Сорян только после этих слов эта тварь согласиась со мной.
+#          # Уже не знаю как все не разломать. мышь уже об стол расфигачил. из-за того что ролик отказал.  удары об стол не помгли, об пол тоже, осталось только об стену попробовать.
+#          # Как же задолбало все это пробовать по шажочкам, пробиваясь к исполнению чего я хочу.
