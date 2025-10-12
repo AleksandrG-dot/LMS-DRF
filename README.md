@@ -1,5 +1,96 @@
 # LMS-сервис
+API-cервис для создания обучающего контента. Позволяет создавать курсы, уроки в курсах, подписываться на обновления курсов, оплачивать курсы.
+Для работы с сервисом требуется авторизация пользователя. 
+Создано на Django REST Framework и БД PostgreSQL.
+
+## Домашняя работа для уроков: 35.1 Серверы, Nginx и ручной деплой и 35.2 CI/CD и GitHub Actions
+
+### URL-адреса  
+`http://<your_server>/materials/course/` - курсы  
+`http://<your_server>/materials/lesson/` - уроки  (id/, create/, id/delete/, id/update/)  
+`http://<your_server>/users/` - пользователи (register/, login/, token/refresh/, list/, id/, id/update/, id/delete/)  
+`http://<your_server>/users/payment/` - платежи  
+`http://<your_server>/users/subs/` - управление подписками пользователей  
+`http://<your_server>/users/payment-stripe/` - оплата курса авторизованным пользователем 
+(POST-запрос с текстом: {"course":  <id_курса>}, Ответ включает ссылку на оплату сервиса stripe: "link": <ссылка>)  
+`http://<your_server>/users/scheck-stripe-payments/` (POST-запрос) - проверка всех 
+оплаченных через stripe курсов. Курсы в случае успешной оплаты вносятся в модель Payments (можно проверить в ендпоинте 
+"payment/"). Ответ: статистика о количестве проверенных, оплаченных и ошибочных сессиях stripe. 
+
+#### Подробная информация
+Более подробную информацию о типах и json-содержмом запросов смотри на:
+`http://<your_server>/swagger`
+или
+`http://<your_server>/redoc`
+
+### Настройка сервера
+1. Создайте Ваш сервер на базе Ubuntu, поддерживающем SSH протокол
+2. Подключитесь к серверу командой в терминале  
+`ssh <user_name>@<your_server_ip>`
+3. Выполните обновления ПО на сервере по необходимости  
+`sudo apt update && sudo apt upgrade`
+4. Выполните настройку фаервола, оставив открытыми только порты 22, 80, 443
+```commandline
+sudo ufw status  
+sudo ufw enable  # Если фаервол отключен
+sudo ufw allow 80/tcp  
+sudo ufw allow 443/tcp  
+sudo ufw allow 22/tcp  
+```
+
+### Установка ПО на сервер (ручной деплой)
+1. Создайте директорию где будет храниться проект командой `mkdir <directory>`
+2. Перейдите в неё командой `cd <directory>`
+3. Установите Docker по инструкции
+https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+4. Установите docker compose и pip:
+```commandline
+sudo apt update
+sudo apt install docker-compose
+sudo apt install git
+sudo apt upgrade
+```
+5. Скопируйте репозиторий в текущую папку
+`git clone -b develop --single-branch https://github.com/AleksandrG-dot/LMS-DRF.git`
+6. Перейдите в паку LMS-DRF командой `cd LMS-DRF`
+'cd LMS-DRF'
+7. Создайте файл переменных окружения .env по примеру .env.example
+'nano .env'
+8. Запустите контейнеры. Произойдет скачивание на сервер всех необходимых образов. Затраченное время около 1-5 минут в зависимости от скорости интернет вашего сервера
+`docker-compose up -d`
+9. Проект настроен. Поздравляем с успешной настройкой.
+
+### Настройки автоматичекого деплоя (обновления сервера автоматически)
+Для настройки автоматического деплоя проекта на сервер укажите свои настройки секрета GitHub:
+SECRET_KEY, DOCKER_HUB_ACCESS_TOKEN, DOCKER_HUB_USERNAME, SSH_KEY,SSH_USER, SERVER_IP, DOCKER_HUB_USERNAME, EMAIL_HOST, EMAIL_PORT  
+И используйте файл ci.yml
+
+
+### Структура сервисов
+- web: Django приложение на порту 8000
+- db: PostgreSQL база данных на порту 5432
+- redis: Redis кэш на порту 6379
+- celery: Celery worker для отложенных задач
+- celery_beat: Celery beat для периодических задач
+
+
+Продолжаем работать с проектом от ДЗ 34.1 и 34.2  
+Здесь:  
+- создана удаленная виртуальная машина (ВМ) на Yandex Cloud. На ней далее будет развернут сервер. Управление осуществляется по протоколу SSH
+- получен новый ключ ssh rsa на локальной машине (папка .ssh) и привязан к ВМ
+- настроена виртуальная машина на Yandex Cloud: обновление всех пакетов, установка Docker, Docker compose, pip, настройка фаервола
+- в проект добавлен сервер Nginx, который запустится контейнером на ВМ согласно Dockerfile (nginx:latest): в docker-compose.yml и директория nginx с содержимым
+- выполнена базовая настройка сервера Nginx в nginx.conf
+- реализован пайплайн Django-приложения LMS-DRF:
+- произведена настройка  CI/CD с помощью GitHub Actions и Docker Hub. Сценарий в .github/workflows/ci.yml
+- Пункты ci.yml: проверка линтером flake8 -> запуск тестов в test.py -> сборка и отправка образа на DockerHub -> деплой образа с DockerHub на сервер. Ошибка на одном из пунктов приведет к остановке дальнейшего выполнения.
+- создан аккаунт на Docker Hub
+- прописаны переменные в секретах GitHub (ip-адрес сервера, ssh-ключ сервера, имя пользователя на сервере, имя пользователя DockerHub, токен DockerHub)
+
+
+
 ## Домашняя работа для уроков: 34.1 Docker и 34.2 Docker Compose
+<details><summary>Подробности</summary>  
 
 ### Шаги для запуска всех сервисов
 
@@ -54,7 +145,7 @@ http://127.0.0.1:8000/users/scheck-stripe-payments/ (POST-запрос) - про
 - создан и заполнен файл Dockerfile для автоматического сбора Docker-образа
 - добавлен файл с исключениями .dockerignore
 - создан и заполнен файл docker-compose.yml автоматического сбора образов и запуска контейнеров
-
+</details>
 
 
 ## Домашняя работа для урока: 33. Celery (Отложенные и периодические задачи)

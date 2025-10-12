@@ -57,7 +57,7 @@ def check_stripe_payment():
             # Проверяем статус оплаты
             if session.payment_status == "paid":
                 # Создаем запись в основной модели Payment
-                payment = Payment.objects.create(
+                Payment.objects.create(
                     user=stripe_payment.user,
                     date=stripe_payment.date,
                     course=stripe_payment.course,

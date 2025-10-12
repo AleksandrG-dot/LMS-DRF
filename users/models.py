@@ -95,7 +95,8 @@ class Payment(models.Model):
     )
 
     def __str__(self):
-        return f"Курс: {self.course if self.course else '-'} Урок: {self.lesson if self.lesson else '-'} Клиент: {self.user}"
+        return (f"Курс: {self.course if self.course else '-'} "
+                f"Урок: {self.lesson if self.lesson else '-'} Клиент: {self.user}")
 
     class Meta:
         verbose_name = "Платеж"
